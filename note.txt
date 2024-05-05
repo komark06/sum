@@ -1,0 +1,3 @@
+I欄位：會計 debit credit C子集合 D目標值
+VOUCHER# 為標題欄位第一行
+REF1: 結尾要是790
