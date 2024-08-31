@@ -7,7 +7,7 @@ from typing import Optional
 
 from src.data_loader import AbstractDataLoader, ExcelDataLoader, Summons
 
-logger = logging.getLogger(__name__)
+_logger = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s - [%(levelname)s] %(message)s",
@@ -60,7 +60,7 @@ class BruteForceExecutor(AbstractExecutor):
         for r in range(1, len(numbers)):
             for combination in combinations(numbers, r):
                 if sum([i.amount for i in combination]) == target.amount:
-                    logger.debug(
+                    _logger.debug(
                         f"Target {target.amount}: "
                         f"{tuple(i.amount for i in combination)}"
                     )
@@ -68,12 +68,12 @@ class BruteForceExecutor(AbstractExecutor):
                 already_calculation += 1
                 current_time = time.time()
                 if current_time - start_time > interval_sec:
-                    logger.info(
+                    _logger.info(
                         f"Calculating {target.amount}, "
                         f"{already_calculation/total_calculation*100:.2f}%"
                     )
                     start_time = time.time()
-        logger.debug(f"Target {target.amount}: NO result.")
+        _logger.debug(f"Target {target.amount}: NO result.")
         return Result(target, None)
 
     def calculate_all(
@@ -87,7 +87,7 @@ class BruteForceExecutor(AbstractExecutor):
             start_time = time.time()
             result = self._calculate(target, interval_sec)
             end_time = time.time()
-            logger.info(
+            _logger.info(
                 f"Target: {target.amount}, "
                 f"elpased time: {end_time - start_time:.3f} seconds."
             )
@@ -97,5 +97,5 @@ class BruteForceExecutor(AbstractExecutor):
                     self.data_loader.numbers.remove(i)
             count = count + 1
         elpased_time = time.time() - start_time
-        logger.info(f"Total elpased time: {elpased_time:.3f} " "seconds.")
+        _logger.info(f"Total elpased time: {elpased_time:.3f} " "seconds.")
         return results
