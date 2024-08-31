@@ -14,6 +14,8 @@ logging.basicConfig(
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
+DEFAULT_INTERVAL = 3
+
 
 @dataclass
 class Result:
@@ -35,11 +37,9 @@ class AbstractExecutor(ABC):
     data_loader: AbstractDataLoader
 
     @abstractmethod
-    def _calculate(self, target: Summons):
-        """Calculate a subset sum."""
-
-    @abstractmethod
-    def calculate_all(self):
+    def calculate_all(
+        self, interval_sec: int = DEFAULT_INTERVAL
+    ) -> list[Result]:
         """Calculate all subset sum."""
 
 
@@ -49,7 +49,7 @@ class BruteForceExecutor(AbstractExecutor):
         self.data_loader = data_loader()
         self.data_loader.load()
 
-    def _calculate(self, target: Summons, interval_sec: int):
+    def _calculate(self, target: Summons, interval_sec: int) -> Result:
         """Find subset sum that is equal to target."""
         numbers = [
             i for i in self.data_loader.numbers if i.amount <= target.amount
@@ -76,17 +76,26 @@ class BruteForceExecutor(AbstractExecutor):
         logger.debug(f"Target {target.amount}: NO result.")
         return Result(target, None)
 
-    def calculate_all(self, interval_sec: int = 1) -> list[Result]:
+    def calculate_all(
+        self, interval_sec: int = DEFAULT_INTERVAL
+    ) -> list[Result]:
+        """Calculate all subset sum."""
         results = []
         count = 0
         start_time = time.time()
         for target in self.data_loader.targets:
+            start_time = time.time()
             result = self._calculate(target, interval_sec)
+            end_time = time.time()
+            logger.info(
+                f"Target: {target.amount}, "
+                f"elpased time: {end_time - start_time:.3f} seconds."
+            )
             results.append(result)
             if result.subset:
                 for i in result.subset:
                     self.data_loader.numbers.remove(i)
             count = count + 1
         elpased_time = time.time() - start_time
-        logger.info(f"elpased time: {elpased_time:.3f} seconds.")
+        logger.info(f"Total elpased time: {elpased_time:.3f} " "seconds.")
         return results
