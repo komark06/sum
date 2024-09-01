@@ -89,13 +89,13 @@ class BruteForceExecutor(AbstractExecutor):
             end_time = time.time()
             _logger.info(
                 f"Target: {target.amount}, "
-                f"elpased time: {end_time - start_time:.3f} seconds."
+                f"elapsed time: {end_time - start_time:.3f} seconds."
             )
             results.append(result)
             if result.subset:
                 for i in result.subset:
                     self.data_loader.numbers.remove(i)
             count = count + 1
-        elpased_time = time.time() - overall_start_time
-        _logger.info(f"Total elpased time: {elpased_time:.3f} " "seconds.")
+        elapsed_time = time.time() - overall_start_time
+        _logger.info(f"Total elapsed time: {elapsed_time:.3f} " "seconds.")
         return results
