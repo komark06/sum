@@ -82,7 +82,7 @@ class BruteForceExecutor(AbstractExecutor):
         """Calculate all subset sum."""
         results = []
         count = 0
-        start_time = time.time()
+        overall_start_time = time.time()
         for target in self.data_loader.targets:
             start_time = time.time()
             result = self._calculate(target, interval_sec)
@@ -96,6 +96,6 @@ class BruteForceExecutor(AbstractExecutor):
                 for i in result.subset:
                     self.data_loader.numbers.remove(i)
             count = count + 1
-        elpased_time = time.time() - start_time
+        elpased_time = time.time() - overall_start_time
         _logger.info(f"Total elpased time: {elpased_time:.3f} " "seconds.")
         return results
