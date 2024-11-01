@@ -44,10 +44,18 @@ class AbstractExecutor(ABC):
 
 
 class BruteForceExecutor(AbstractExecutor):
-    def __init__(self, data_loader: AbstractDataLoader = ExcelDataLoader):
+
+    def __init__(
+        self,
+        data_loader: AbstractDataLoader = ExcelDataLoader,
+        filename=None,
+    ):
         """Initialize data loader and use it to load data."""
         self.data_loader = data_loader()
-        self.data_loader.load()
+        if filename:
+            self.data_loader.load(filename)
+        else:
+            self.data_loader.load()
 
     def _calculate(self, target: Summons, interval_sec: int) -> Result:
         """Find subset sum that is equal to target."""
