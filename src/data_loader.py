@@ -63,31 +63,22 @@ class ExcelDataLoader(AbstractDataLoader):
         if self.loaded and not reload:
             return
         workbook = openpyxl.load_workbook(filename)
-        sheet = workbook.active
-        start_header = "VOUCHER#"
-        for row in sheet.iter_rows():
-            if row[0].value == start_header:
-                headers = [col.value for col in row]
-                start_row = row[0].row + 1
-                break
-        else:
-            raise ValueError("Header NOT FOUND!!")
+        sheet = workbook[workbook.sheetnames[0]]
+        targets = [
+            row[0] for row in sheet.iter_rows(values_only=True) if row[0]
+        ]
         self.targets = []
         self.numbers = []
-        for row in sheet.iter_rows(min_row=start_row, values_only=True):
-            data = {key: value for key, value in zip(headers, row)}
-            if data[start_header]:
-                summons_account = data[start_header]
-                amount = data["VOUCHER_AMT"]
-                year = int(summons_account[:4])
-                month = int(summons_account[4:6])
-                day = int(summons_account[6:8])
-                date = datetime.date(year, month, day)
-                summons = Summons(summons_account, date, abs(amount))
-                flag = data["D/C"]
-                if flag == "D":
-                    self.targets.append(summons)
-                else:
-                    self.numbers.append(summons)
+        sheet = workbook[workbook.sheetnames[1]]
+        for row in sheet.iter_rows(values_only=True):
+            tag = row[0]
+            date = datetime.date.fromisoformat(tag.split("-")[0])
+            amount = abs(row[1])
+            obj = Summons(tag, date, amount)
+            if amount in targets:
+                self.targets.append(obj)
+                targets.remove(amount)
+            else:
+                self.numbers.append(obj)
         self._loaded = True
         self.sort()
