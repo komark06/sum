@@ -56,9 +56,6 @@ class AbstractDataLoader(ABC):
 class ExcelDataLoader(AbstractDataLoader):
     """A Data Loader load data from Excel."""
 
-    def __init__(self):
-        super().__init__()
-
     def load(self, filename="normal.xlsx", reload=False):
         if self.loaded and not reload:
             return
