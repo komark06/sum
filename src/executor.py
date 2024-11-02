@@ -34,7 +34,6 @@ class Result:
 
 
 class AbstractExecutor(ABC):
-    data_loader: AbstractDataLoader
 
     @abstractmethod
     def calculate_all(
