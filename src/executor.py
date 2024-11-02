@@ -1,3 +1,5 @@
+"""This module contains executors that solve problems."""
+
 import logging
 import time
 from abc import ABC, abstractmethod
@@ -23,8 +25,8 @@ class Result:
     Represents the result of a subset sum problem.
 
     Attributes:
-        target (Summons): The target of subset sum problem.
-        subset (Optional[List[Summons]]): The subset of Summons that
+        target: The target of subset sum problem.
+        subset: The subset of Summons that
             sums up to the target. If no such subset exists, it is
             None.
     """
@@ -34,6 +36,9 @@ class Result:
 
 
 class AbstractExecutor(ABC):
+    """
+    Abstract executor class.
+    """
 
     @abstractmethod
     def calculate_all(
@@ -43,21 +48,35 @@ class AbstractExecutor(ABC):
 
 
 class BruteForceExecutor(AbstractExecutor):
+    """
+    Executor that use brute-force to solve problem.
+    """
 
     def __init__(
         self,
         data_loader: AbstractDataLoader = ExcelDataLoader,
-        filename=None,
+        filename: str = None,
     ):
-        """Initialize data loader and use it to load data."""
-        self.data_loader = data_loader()
+        """Initialize data loader and use it to load data.
+
+        Parameters:
+            data_loader: The data loader use to load data.
+            filename: The file path.
+        """
+        self.data_loader: AbstractDataLoader = data_loader()
         if filename:
             self.data_loader.load(filename)
         else:
             self.data_loader.load()
 
     def _calculate(self, target: Summons, interval_sec: int) -> Result:
-        """Find subset sum that is equal to target."""
+        """Find subset sum that is equal to target.
+
+        Parameters:
+            target: The target we want to calculate.
+            interval_sec: The time interval (in seconds) for updating
+                the status.
+        """
         numbers = [
             i for i in self.data_loader.numbers if i.amount <= target.amount
         ]
@@ -86,7 +105,12 @@ class BruteForceExecutor(AbstractExecutor):
     def calculate_all(
         self, interval_sec: int = DEFAULT_INTERVAL
     ) -> list[Result]:
-        """Calculate all subset sum."""
+        """Calculate all subset sum.
+
+        Parameters:
+            interval_sec: The time interval (in seconds) for updating
+                the status.
+        """
         results = []
         count = 0
         overall_start_time = time.time()
