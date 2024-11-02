@@ -1,4 +1,4 @@
-"""XML data loader."""
+"""This module contains data loader that use to load data."""
 
 import datetime
 from abc import ABC, abstractmethod
@@ -9,7 +9,16 @@ import openpyxl
 
 @dataclass
 class Summons:
-    summons_account: str
+    """
+    An Accounting summons.
+
+    Attributes:
+        account: The account of summon.
+        date: The date of summon.
+        amount: The amount of summon.
+    """
+
+    account: str
     date: datetime.date
     amount: int
 
@@ -19,10 +28,11 @@ class AbstractDataLoader(ABC):
     An abstract data loader.
 
     Attributes:
-        targets (List[Summons]): The list of targets that we want to
+        targets: The list of targets that we want to
             solve as subset sum target.
-        numbers (List[Summons]): The subset that we search for the sum
+        numbers: The subset that we search for the sum
             of its subset is equal to target.
+        _loaded: The flag indicate that data is loaded or not.
     """
 
     targets: list[Summons]
@@ -30,6 +40,7 @@ class AbstractDataLoader(ABC):
     _loaded: bool
 
     def __init__(self):
+        """Initialize flag."""
         self._loaded = False
 
     @property
@@ -56,7 +67,12 @@ class AbstractDataLoader(ABC):
 class ExcelDataLoader(AbstractDataLoader):
     """A Data Loader load data from Excel."""
 
-    def load(self, filename="normal.xlsx", reload=False):
+    def load(self, filename: str = "normal.xlsx", reload=False):
+        """Load data from Excel.
+
+        Parameters:
+            filename: The file path of excel.
+        """
         if self.loaded and not reload:
             return
         workbook = openpyxl.load_workbook(filename)
