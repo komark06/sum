@@ -37,8 +37,13 @@ class Result:
 
 class AbstractExecutor(ABC):
     """
-    Abstract executor class.
+    Abstract executor class that solve subset sum problem.
+
+    Attributes:
+    data_loader: The data loader the load data.
     """
+
+    data_loader: AbstractDataLoader
 
     @abstractmethod
     def calculate_all(
@@ -49,7 +54,7 @@ class AbstractExecutor(ABC):
 
 class BruteForceExecutor(AbstractExecutor):
     """
-    Executor that use brute-force to solve problem.
+    Executor that use brute-force to solve subset sum problem.
     """
 
     def __init__(
