@@ -73,6 +73,7 @@ class BruteForceExecutor(AbstractExecutor):
             self.data_loader.load(filename)
         else:
             self.data_loader.load()
+        self._numbers = list(self.data_loader.numbers)
 
     def _calculate(self, target: Summons, interval_sec: int) -> Result:
         """Find subset sum that is equal to target.
@@ -82,9 +83,7 @@ class BruteForceExecutor(AbstractExecutor):
             interval_sec: The time interval (in seconds) for updating
                 the status.
         """
-        numbers = [
-            i for i in self.data_loader.numbers if i.amount <= target.amount
-        ]
+        numbers = [i for i in self._numbers if i.amount <= target.amount]
         total_calculation = 2 ** len(numbers)
         already_calculation = 0
         start_time = time.time()
@@ -130,8 +129,9 @@ class BruteForceExecutor(AbstractExecutor):
             results.append(result)
             if result.subset:
                 for i in result.subset:
-                    self.data_loader.numbers.remove(i)
+                    self._numbers.remove(i)
             count = count + 1
+        self._numbers = list(self.data_loader.numbers)
         elapsed_time = time.time() - overall_start_time
         _logger.info(f"Total elapsed time: {elapsed_time:.3f} " "seconds.")
         return results
