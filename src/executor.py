@@ -59,8 +59,8 @@ class BruteForceExecutor(AbstractExecutor):
 
     def __init__(
         self,
-        data_loader: AbstractDataLoader = ExcelDataLoader,
         filename: str = None,
+        data_loader: AbstractDataLoader = ExcelDataLoader,
     ):
         """Initialize data loader and use it to load data.
 
@@ -69,10 +69,7 @@ class BruteForceExecutor(AbstractExecutor):
             filename: The file path.
         """
         self.data_loader: AbstractDataLoader = data_loader()
-        if filename:
-            self.data_loader.load(filename)
-        else:
-            self.data_loader.load()
+        self.data_loader.load(filename)
         self._numbers = list(self.data_loader.numbers)
 
     def _calculate(self, target: Summons, interval_sec: int) -> Result:

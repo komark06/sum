@@ -67,7 +67,7 @@ class AbstractDataLoader(ABC):
 class ExcelDataLoader(AbstractDataLoader):
     """A Data Loader load data from Excel."""
 
-    def load(self, filename: str = "normal.xlsx", reload=False):
+    def load(self, filename: str, reload=False):
         """Load data from Excel.
 
         Parameters:
