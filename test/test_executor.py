@@ -1,17 +1,16 @@
 import datetime
-
 from src.data_loader import AbstractDataLoader, Summons
 from src.executor import BruteForceExecutor
 
-numbers = [i for i in range(23)]
-targets = [sum(numbers) + 1, numbers[-1]]
-
 
 class FakeDataLoader(AbstractDataLoader):
-    """A Fake Data Loader."""
+    """A Fake Data Loader that simulate ExcelDataLoader."""
 
-    def __init__(self):
-        super().__init__()
+    def load(self, filename: str, reload=False):
+        """Simulate the load method of ExcelDataLoader."""
+        numbers = [i for i in range(23)]
+        targets = [sum(numbers) + 1, numbers[-1]]
+
         self.targets = [
             Summons("targets", datetime.date(2020, 1, 1), target)
             for target in targets
@@ -23,18 +22,12 @@ class FakeDataLoader(AbstractDataLoader):
         self.sort()
         self._loaded = True
 
-    def load(self):
-        pass
 
-
-def cal(cls):
-    eva = cls(FakeDataLoader)
+def test_executor():
+    """Verify that BruteForceExecutor successfully solve problem."""
+    eva = BruteForceExecutor(data_loader=FakeDataLoader)
     assert eva.data_loader.loaded
     results = eva.calculate_all()
     for i in results:
         if i.subset:
             assert sum([x.amount for x in i.subset]) == i.target.amount
-
-
-def test_main():
-    cal(BruteForceExecutor)
