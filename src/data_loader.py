@@ -72,6 +72,7 @@ class ExcelDataLoader(AbstractDataLoader):
 
         Parameters:
             filename: The file path of excel.
+            reload: The flag to decide reload or not.
         """
         if self.loaded and not reload:
             return
