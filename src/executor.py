@@ -47,9 +47,20 @@ class AbstractExecutor(ABC):
 
     @abstractmethod
     def calculate_all(
-        self, interval_sec: int = DEFAULT_INTERVAL
+        self,
+        targets: list[Summons],
+        numbers: list[Summons],
+        interval_sec: int = DEFAULT_INTERVAL,
     ) -> list[Result]:
-        """Calculate all subset sum."""
+        """Calculate all subset sum.
+
+        Parameters:
+            targets: The list of targets.
+            numbers: The subset that we search for the sum
+                of its subset is equal to target.
+            interval_sec: The time interval (in seconds) for updating
+                the status.
+        """
 
 
 class BruteForceExecutor(AbstractExecutor):
@@ -57,30 +68,19 @@ class BruteForceExecutor(AbstractExecutor):
     Executor that use brute-force to solve subset sum problem.
     """
 
-    def __init__(
-        self,
-        filename: str = None,
-        data_loader: AbstractDataLoader = ExcelDataLoader,
-    ):
-        """Initialize data loader and use it to load data.
-
-        Parameters:
-            data_loader: The data loader use to load data.
-            filename: The file path.
-        """
-        self.data_loader: AbstractDataLoader = data_loader()
-        self.data_loader.load(filename)
-        self._numbers = list(self.data_loader.numbers)
-
-    def _calculate(self, target: Summons, interval_sec: int) -> Result:
+    def _calculate(
+        self, target: Summons, numbers: list[Summons], interval_sec: int
+    ) -> Result:
         """Find subset sum that is equal to target.
 
         Parameters:
-            target: The target we want to calculate.
+            targets: The target that we want to solve.
+            numbers: The subset that we search for the sum
+                of its subset is equal to target.
             interval_sec: The time interval (in seconds) for updating
                 the status.
         """
-        numbers = [i for i in self._numbers if i.amount <= target.amount]
+        numbers = [i for i in numbers if i.amount <= target.amount]
         total_calculation = 2 ** len(numbers)
         already_calculation = 0
         start_time = time.time()
@@ -104,20 +104,27 @@ class BruteForceExecutor(AbstractExecutor):
         return Result(target, None)
 
     def calculate_all(
-        self, interval_sec: int = DEFAULT_INTERVAL
+        self,
+        targets: list[Summons],
+        numbers: list[Summons],
+        interval_sec: int = DEFAULT_INTERVAL,
     ) -> list[Result]:
         """Calculate all subset sum.
 
         Parameters:
+            targets: The list of targets.
+            numbers: The subset that we search for the sum
+                of its subset is equal to target.
             interval_sec: The time interval (in seconds) for updating
                 the status.
         """
         results = []
         count = 0
+        _numbers = list(numbers)
         overall_start_time = time.time()
-        for target in self.data_loader.targets:
+        for target in targets:
             start_time = time.time()
-            result = self._calculate(target, interval_sec)
+            result = self._calculate(target, numbers, interval_sec)
             end_time = time.time()
             _logger.info(
                 f"Target: {target.amount}, "
@@ -126,9 +133,8 @@ class BruteForceExecutor(AbstractExecutor):
             results.append(result)
             if result.subset:
                 for i in result.subset:
-                    self._numbers.remove(i)
+                    _numbers.remove(i)
             count = count + 1
-        self._numbers = list(self.data_loader.numbers)
         elapsed_time = time.time() - overall_start_time
         _logger.info(f"Total elapsed time: {elapsed_time:.3f} " "seconds.")
         return results
