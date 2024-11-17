@@ -6,7 +6,7 @@ from src.executor import BruteForceExecutor
 class FakeDataLoader(AbstractDataLoader):
     """A Fake Data Loader that simulate ExcelDataLoader."""
 
-    def load(self, filename: str, reload=False):
+    def load(self):
         """Simulate the load method of ExcelDataLoader."""
         numbers = [i for i in range(23)]
         targets = [sum(numbers) + 1, numbers[-1]]
@@ -25,9 +25,10 @@ class FakeDataLoader(AbstractDataLoader):
 
 def test_executor():
     """Verify that BruteForceExecutor successfully solve problem."""
-    eva = BruteForceExecutor(data_loader=FakeDataLoader)
-    assert eva.data_loader.loaded
-    results = eva.calculate_all()
+    data_loader = FakeDataLoader()
+    data_loader.load()
+    eva = BruteForceExecutor()
+    results = eva.calculate_all(data_loader.targets, data_loader.numbers)
     for i in results:
         if i.subset:
             assert sum([x.amount for x in i.subset]) == i.target.amount
