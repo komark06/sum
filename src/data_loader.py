@@ -86,6 +86,8 @@ class ExcelDataLoader(AbstractDataLoader):
         sheet = workbook[workbook.sheetnames[1]]
         for row in sheet.iter_rows(values_only=True):
             tag = row[0]
+            if not tag:
+                break
             date = datetime.date.fromisoformat(tag.split("-")[0])
             amount = abs(row[1])
             obj = Summons(tag, date, amount)
