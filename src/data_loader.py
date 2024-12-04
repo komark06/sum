@@ -55,7 +55,6 @@ class AbstractDataLoader(ABC):
     @abstractmethod
     def load(self):
         """Load data."""
-        pass
 
     def sort(self):
         """Sort numbers and targets"""
