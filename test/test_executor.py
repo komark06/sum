@@ -1,7 +1,9 @@
 import datetime
+
+import pytest
+
 from src.data_loader import AbstractDataLoader, Summons
 from src.executor import BruteForceExecutor
-import pytest
 
 
 class FakeDataLoader(AbstractDataLoader):
@@ -31,11 +33,7 @@ class FakeDataLoader(AbstractDataLoader):
         target that is not achievable.
         """
         numbers = [i for i in range(10)]
-        if self.solvable:
-            targets = [numbers[-1]]
-        else:
-            targets = [sum(numbers) + 1]
-
+        targets = [numbers[-1]] if self.solvable else [sum(numbers) + 1]
         self.targets = [
             Summons("targets", datetime.date(2020, 1, 1), target)
             for target in targets
