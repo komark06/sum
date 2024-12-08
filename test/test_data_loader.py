@@ -1,8 +1,10 @@
-from openpyxl import Workbook
-from src.data_loader import ExcelDataLoader, Summons
 from datetime import date
-from itertools import chain
 from io import BytesIO
+from itertools import chain
+
+from openpyxl import Workbook
+
+from src.data_loader import ExcelDataLoader, Summons
 
 
 def test_load():
