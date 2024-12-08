@@ -94,7 +94,9 @@ class GUI:
     def save_file(self, results: list[Result]):
         try:
             filename = filedialog.asksaveasfilename(
-                title="儲存檔案", filetypes=[("*.xlsx", ".xlsx")]
+                title="儲存檔案",
+                defaultextension=".xlsx",
+                filetypes=[("*.xlsx", ".xlsx")],
             )
             if not filename:
                 filename = Path("export.xlsx").absolute()  # Default path
