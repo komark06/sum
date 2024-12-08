@@ -87,7 +87,9 @@ class ExcelDataLoader(AbstractDataLoader):
             tag = row[0]
             if not tag:
                 break
-            date = datetime.date.fromisoformat(tag.split("-")[0])
+            date_str = tag.split("-")[0]
+            formatted_str = f"{date_str[:4]}-{date_str[4:6]}-{date_str[6:]}"
+            date = datetime.date.fromisoformat(formatted_str)
             amount = abs(row[1])
             obj = Summons(tag, date, amount)
             if amount in targets:
