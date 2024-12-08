@@ -1,3 +1,5 @@
+"""This module is used to output to Excel format."""
+
 import openpyxl
 from openpyxl.utils import get_column_letter
 
