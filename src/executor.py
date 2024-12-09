@@ -74,8 +74,8 @@ class BruteForceExecutor(AbstractExecutor):
         """Find subset sum that is equal to target.
 
         Parameters:
-            targets: The target that we want to solve.
-            numbers: The subset that we search for the sum
+            target: The target that we want to solve.
+            numbers: The subset where we search for the sum
                 of its subset is equal to target.
             interval_sec: The time interval (in seconds) for updating
                 the status.
