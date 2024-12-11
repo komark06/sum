@@ -38,12 +38,7 @@ class Result:
 class AbstractExecutor(ABC):
     """
     Abstract executor class that solve subset sum problem.
-
-    Attributes:
-    data_loader: The data loader the load data.
     """
-
-    data_loader: AbstractDataLoader
 
     @abstractmethod
     def calculate_all(
