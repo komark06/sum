@@ -109,15 +109,6 @@ class BruteForceExecutor(AbstractExecutor):
         numbers: list[Summons],
         interval_sec: int = DEFAULT_INTERVAL,
     ) -> list[Result]:
-        """Calculate all subset sum.
-
-        Parameters:
-            targets: The list of targets.
-            numbers: The subset that we search for the sum
-                of its subset is equal to target.
-            interval_sec: The time interval (in seconds) for updating
-                the status.
-        """
         results = []
         count = 0
         _numbers = list(numbers)
