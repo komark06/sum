@@ -5,7 +5,7 @@ import time
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from itertools import combinations
-from typing import Optional
+from typing import Callable, Optional
 
 from src.data_loader import Summons
 
@@ -40,12 +40,20 @@ class AbstractExecutor(ABC):
     Abstract executor class that solve subset sum problem.
     """
 
+    def __init__(self):
+        self._init_status()
+
+    def _init_status(self):
+        """Initialize the status of the executor."""
+        self._total_calculation = 0
+        self._already_calculation = 0
+
     @abstractmethod
     def calculate_all(
         self,
         targets: list[Summons],
         numbers: list[Summons],
-        interval_sec: int = DEFAULT_INTERVAL,
+        callback: Callable[[float], None] = lambda x: None,
     ) -> list[Result]:
         """Calculate all subset sum.
 
@@ -53,8 +61,9 @@ class AbstractExecutor(ABC):
             targets: The list of targets.
             numbers: The subset that we search for the sum
                 of its subset is equal to target.
-            interval_sec: The time interval (in seconds) for updating
-                the status.
+            callback: A callback function that is called with the
+                progress of the calculation. Defaults to a no-op lambda
+                function.
         """
 
 
@@ -64,7 +73,10 @@ class BruteForceExecutor(AbstractExecutor):
     """
 
     def _calculate(
-        self, target: Summons, numbers: list[Summons], interval_sec: int
+        self,
+        target: Summons,
+        numbers: list[Summons],
+        callback: Callable[[float], None] = lambda x: None,
     ) -> Result:
         """Find subset sum that is equal to target.
 
@@ -72,45 +84,35 @@ class BruteForceExecutor(AbstractExecutor):
             target: The target that we want to solve.
             numbers: The subset where we search for the sum
                 of its subset is equal to target.
-            interval_sec: The time interval (in seconds) for updating
-                the status.
+            callback: A callback function that is called with the
+                progress of the calculation. Defaults to a no-op lambda
+                function.
         """
         numbers = [i for i in numbers if i.amount <= target.amount]
-        total_calculation = 2 ** len(numbers)
-        already_calculation = 0
-        start_time = time.time()
         for r in range(1, len(numbers)):
             for combination in combinations(numbers, r):
-                if sum([i.amount for i in combination]) == target.amount:
-                    _logger.debug(
-                        f"Target {target.amount}: "
-                        f"{tuple(i.amount for i in combination)}"
-                    )
+                total_amount = sum([i.amount for i in combination])
+                self._already_calculation += 1
+                callback(self._already_calculation / self._total_calculation)
+                if total_amount == target.amount:
                     return Result(target, combination)
-                already_calculation += 1
-                current_time = time.time()
-                if current_time - start_time > interval_sec:
-                    _logger.info(
-                        f"Calculating {target.amount}, "
-                        f"{already_calculation/total_calculation*100:.2f}%"
-                    )
-                    start_time = time.time()
-        _logger.debug(f"Target {target.amount}: NO result.")
         return Result(target, None)
 
     def calculate_all(
         self,
         targets: list[Summons],
         numbers: list[Summons],
-        interval_sec: int = DEFAULT_INTERVAL,
+        callback: Callable[[float], None] = lambda x: None,
     ) -> list[Result]:
+        self._init_status()
+        self._total_calculation = 2 ** len(numbers)
         results = []
         count = 0
         _numbers = list(numbers)
         overall_start_time = time.time()
         for target in targets:
             start_time = time.time()
-            result = self._calculate(target, numbers, interval_sec)
+            result = self._calculate(target, numbers, callback)
             end_time = time.time()
             _logger.info(
                 f"Target: {target.amount}, "
@@ -122,5 +124,5 @@ class BruteForceExecutor(AbstractExecutor):
                     _numbers.remove(i)
             count = count + 1
         elapsed_time = time.time() - overall_start_time
-        _logger.info(f"Total elapsed time: {elapsed_time:.3f} " "seconds.")
+        _logger.info(f"Total elapsed time: {elapsed_time:.3f} seconds.")
         return results
