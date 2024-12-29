@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from itertools import combinations
 from typing import Optional
 
-from src.data_loader import AbstractDataLoader, Summons
+from src.data_loader import Summons
 
 _logger = logging.getLogger(__name__)
 logging.basicConfig(

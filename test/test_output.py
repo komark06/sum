@@ -1,58 +1,25 @@
-from datetime import date
 from io import BytesIO
 from itertools import zip_longest
 
 import openpyxl
 
-from src.data_loader import AbstractDataLoader, Summons
-from src.executor import Result
+from src.data_loader import Summons
+from src.executor import BruteForceExecutor
 from src.output import output_excel
-
-
-class FakeDataLoader(AbstractDataLoader):
-    """A fake data loader that simulates ExcelDataLoader.
-
-    This loader is designed to mimic the functionality of ExcelDataLoader
-    by generating a set of numbers and targets to simulate solving the
-    subset sum problem.
-    """
-
-    def load(self):
-        """Load simulated data.
-
-        This method generates a set of numbers and targets. If the
-        `solvable` flag is True, the target will be a subset sum
-        achievable from the numbers. Otherwise, it will generate a
-        target that is not achievable.
-        """
-        numbers = [i for i in range(10)]
-        targets = [numbers[0], numbers[1] + numbers[2]]
-
-        self.targets = [
-            Summons("targets", date(2020, 1, 1), target) for target in targets
-        ]
-        self.numbers = [
-            Summons("numbers", date(2020, 1, 1), number) for number in numbers
-        ]
-        self.sort()
-        self._loaded = True
+from test.utils import FakeDataLoader
 
 
 def test_output_excel():
     """Verify that output_excel successfully save output to file."""
     data_loader = FakeDataLoader()
     data_loader.load()
-    results = [
-        Result(data_loader.targets[0], [data_loader.numbers[0]]),
-        Result(
-            data_loader.targets[1],
-            [data_loader.numbers[1], data_loader.numbers[2]],
-        ),
-    ]
+    results = BruteForceExecutor().calculate_all(
+        data_loader.targets, data_loader.numbers
+    )
+    results = 2 * results  # Test multiple results.
     with BytesIO() as file:
         output_excel(results, data_loader, file)
         workbook = openpyxl.load_workbook(file)
-
         sheet = workbook[workbook.sheetnames[0]]
         for row, target, number in zip_longest(
             sheet.iter_rows(min_row=2, values_only=True),
