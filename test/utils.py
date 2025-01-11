@@ -1,6 +1,9 @@
 import datetime
+import time
+from typing import Callable
 
 from src.data_loader import AbstractDataLoader, Summons
+from src.executor import AbstractExecutor, Result
 
 
 class FakeDataLoader(AbstractDataLoader):
@@ -42,3 +45,49 @@ class FakeDataLoader(AbstractDataLoader):
         ]
         self.sort()
         self._loaded = True
+
+
+class InfiniteExecutor(AbstractExecutor):
+    """An executor that never finishes the calculation.
+
+    This executor is designed to simulate an executor that never
+    finishes the calculation. It is used to test the timeout feature
+    of the SubprocessManager.
+    """
+
+    def calculate_all(
+        self,
+        targets: list[Summons],
+        numbers: list[Summons],
+        callback: Callable[[float], None] = lambda x: None,
+    ) -> list[Result]:
+        """Calculate all subset sum.
+
+        This method will never finish the calculation. It is used to
+        test the timeout feature of the SubprocessManager.
+        """
+        while True:
+            callback(0.5)
+            time.sleep(1)
+
+
+class ExceptionExecutor(AbstractExecutor):
+    """An executor that raises an exception.
+
+    This executor is designed to simulate an executor that raises an
+    exception during the calculation. It is used to test the error
+    handling feature of the SubprocessManager.
+    """
+
+    def calculate_all(
+        self,
+        targets: list[Summons],
+        numbers: list[Summons],
+        callback: Callable[[float], None] = lambda x: None,
+    ) -> list[Result]:
+        """Calculate all subset sum.
+
+        This method will raise an exception. It is used to test the
+        error handling feature of the SubprocessManager.
+        """
+        raise ValueError("Simulated Executor Error")
