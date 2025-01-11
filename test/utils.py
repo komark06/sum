@@ -20,6 +20,7 @@ class FakeDataLoader(AbstractDataLoader):
         """
         super().__init__()
         self.solvable = solvable
+        self.load()
 
     def load(self):
         """Load simulated data.

@@ -12,7 +12,6 @@ from test.utils import FakeDataLoader
 def test_output_excel():
     """Verify that output_excel successfully save output to file."""
     data_loader = FakeDataLoader()
-    data_loader.load()
     results = BruteForceExecutor().calculate_all(
         data_loader.targets, data_loader.numbers
     )

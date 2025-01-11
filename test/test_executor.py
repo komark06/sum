@@ -15,7 +15,6 @@ def test_executor(solvable: FakeDataLoader):
     mock_callback = MagicMock()
 
     data_loader = FakeDataLoader(solvable)
-    data_loader.load()
     eva = BruteForceExecutor()
     results = eva.calculate_all(
         data_loader.targets, data_loader.numbers, mock_callback
