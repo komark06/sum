@@ -27,7 +27,7 @@ class FakeDataLoader(AbstractDataLoader):
         self.solvable = solvable
         self.load()
 
-    def load(self):
+    def load(self, *args, **kwargs):
         """Load simulated data.
 
         This method generates a set of numbers and targets. If the
