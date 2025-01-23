@@ -17,7 +17,5 @@ select = [
     "I",
 ]
 
-[format]
-docstring-code-format = true
-docstring-code-line-length = 72
-
+[pycodestyle]
+max-doc-length = 72

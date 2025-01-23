@@ -94,7 +94,10 @@ def test_update_status(manager_instance: SubprocessManager):
 
 
 def test_update_status_empty(manager_instance: SubprocessManager):
-    """Test update_status method of SubprocessManager when queue is empty."""
+    """Test update_status method of SubprocessManager.
+
+    Test when the queue is empty.
+    """
     manager_instance.queue = Mock()
     exception = queue.Empty
     manager_instance.queue.get_nowait.side_effect = exception
