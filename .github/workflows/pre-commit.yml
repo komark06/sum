@@ -3,10 +3,10 @@ name: Pre-commit Check
 on:
   pull_request:
     branches:
-      - "**"
+      - main
   push:
     branches:
-      - develop
+      - "**"
 
 jobs:
   pre-commit-check:
