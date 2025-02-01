@@ -5,6 +5,7 @@ line-length = 79
 select = [
     # pycodestyle
     "E",
+    "W",
     # Pyflakes
     "F",
     # pyupgrade
