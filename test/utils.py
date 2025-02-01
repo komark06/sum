@@ -4,6 +4,7 @@ from typing import Callable
 
 from src.data_loader import AbstractDataLoader, Summons
 from src.executor import AbstractExecutor, Result
+from src.subprocess import AbstractSubprocessManager
 
 
 class FakeDataLoader(AbstractDataLoader):
@@ -93,3 +94,75 @@ class ExceptionExecutor(AbstractExecutor):
         error handling feature of the SubprocessManager.
         """
         raise ValueError("Simulated Executor Error")
+
+
+class FakeSubprocessManager(AbstractSubprocessManager):
+    """A fake subprocess manager that simulates SubprocessManager.
+
+    This manager is fake subprocess manager that do nothing.
+    """
+
+    def is_running(self) -> bool:
+        return False
+
+    def terminate(self):
+        pass
+
+    def start_calculation(
+        self,
+        executor: AbstractExecutor,
+        targets: list[Summons],
+        numbers: list[Summons],
+        callback: Callable[[list[Result]], None],
+        error_callback: Callable[[Exception], None],
+        interval: float,
+    ):
+        pass
+
+    def stop_calculation(self):
+        pass
+
+    def update_status(self):
+        pass
+
+
+class ImmediateSubprocessManager(AbstractSubprocessManager):
+    """A fake subprocess manager that simulates SubprocessManager.
+
+    This manager is a fake subprocess manager that simulates the
+    calculation. It will return a set of results immediately after the
+    calculation starts. The results are the same as the results from the
+    instance of this class.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.results = [
+            Result(
+                Summons("test", datetime.date(2020, 1, 1), 1),
+                [Summons("test", datetime.date(2020, 1, 1), 1)],
+            )
+        ]
+
+    def is_running(self) -> bool:
+        return False
+
+    def terminate(self):
+        pass
+
+    def start_calculation(
+        self,
+        executor: AbstractExecutor,
+        targets: list[Summons],
+        numbers: list[Summons],
+        callback: Callable[[list[Result]], None],
+        error_callback: Callable[[Exception], None],
+        interval: float,
+    ):
+        callback(self.results)
+
+    def stop_calculation(self):
+        pass
+
+    def update_status(self):
+        pass
