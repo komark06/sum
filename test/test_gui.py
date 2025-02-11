@@ -66,18 +66,19 @@ def test_gui_initialization_failure():
     Ensure that the GUI shows an error message when it fails to
     initialize. Also, ensure that the cleanup method is called.
     """
+    error_message = "Simulated GUI Error"
     with patch(
-        "src.gui.GUI._init_tk", side_effect=ValueError("Simulated GUI Error")
+        "src.gui.GUI._init_tk", side_effect=ValueError(error_message)
     ), patch("tkinter.messagebox.showerror") as mock_showerror, patch(
         "src.gui.GUI.cleanup"
     ) as mock_cleanup:
-        with pytest.raises(ValueError, match="Simulated GUI Error"):
+        with pytest.raises(ValueError, match=error_message):
             GUI(
                 FakeDataLoader(), BruteForceExecutor(), FakeSubprocessManager()
             )
         mock_cleanup.assert_called_once()
         mock_showerror.assert_called_once_with(
-            "錯誤", f"初始化失敗: {"Simulated GUI Error"}"
+            "錯誤", f"初始化失敗: {error_message}"
         )
 
 
