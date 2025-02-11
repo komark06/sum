@@ -25,7 +25,6 @@ def _calculate(
         if time.time() - start_time > interval:
             queue.put(progress)
             start_time = time.time()
-            print(progress * 100)
 
     return executor.calculate_all(targets, numbers, callback=callback)
 
